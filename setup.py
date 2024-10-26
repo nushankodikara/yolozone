@@ -9,4 +9,6 @@ setup(
         "opencv-python>=4.10.0.84",
         "ultralytics>=8.3.11"
     ],
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
 )
