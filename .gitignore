@@ -4,3 +4,5 @@ dist
 test
 yolozone.egg-info
 .env
+__pycache__
+*.pt
