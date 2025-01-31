@@ -8,25 +8,28 @@ Contact:
 import numpy as np
 import cv2
 from ultralytics import YOLO
+from .tracker import ObjectTracker
 
 class ObjectDetector:
     def __init__(self, model="yolov8s.pt"):
         """Initialize the object detector with a YOLO model"""
         self.model = model
         self.detector = YOLO(self.model)
+        self.tracker = ObjectTracker()
         
-    def detect_objects(self, img, device="cpu", conf=0.25):
+    def detect_objects(self, img, device="cpu", conf=0.25, track=False):
         """Detect objects in an image
         
         Args:
             img: Input image
             device: Device to run inference on ('cpu', 'cuda', 'mps')
             conf: Confidence threshold (0-1)
+            track: Enable object tracking
             
         Returns:
             results: Detection results containing boxes, classes, and confidence scores
         """
-        results = self.detector(img, device=device, conf=conf)
+        results = self.detector.track(img, device=device, conf=conf) if track else self.detector(img, device=device, conf=conf)
         return results[0]
     
     def get_boxes(self, results):
