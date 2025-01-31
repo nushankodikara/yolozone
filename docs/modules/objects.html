@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection Module - YoloZone | Detect and Classify Objects</title>
+    <meta name="description" content="YoloZone's Object Detection module provides powerful capabilities for detecting and classifying objects in images and videos using YOLOv8.">
+    <meta name="keywords" content="object detection, YOLOv8, computer vision, image classification, video processing, deep learning">
+    <meta name="author" content="Nushan Kodikara">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Object Detection Module - YoloZone">
+    <meta property="og:description" content="Powerful object detection and classification capabilities using YOLOv8.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://nushankodikara.github.io/yolozone/modules/objects.html">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Object Detection Module - YoloZone">
+    <meta name="twitter:description" content="Powerful object detection and classification capabilities using YOLOv8.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nushankodikara.github.io/yolozone/modules/objects.html">
+    
+    <!-- Fonts and Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <!-- Theme Script -->
+    <script>
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand"><a href="../index.html">YoloZone</a></div>
+        <ul style="display: flex; justify-content: center; align-items: center;">
+            <li><a href="../index.html#overview">Overview</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="../index.html#examples">Examples</a></li>
+            <li><a href="../index.html#installation">Installation</a></li>
+            <li>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path class="sun" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        <path class="moon" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Objects Module</h1>
+        <p>Powerful object detection and classification capabilities</p>
+    </header>
+
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>The Objects module provides a high-level interface for object detection and classification using YOLOv8. It supports multiple detection strategies, custom models, and real-time processing.</p>
+        </section>
+
+        <section id="installation">
+            <h2>Usage</h2>
+            <div class="installation-card">
+                <pre><code>from yolozone import Objects
+
+# Initialize detector
+detector = Objects()
+
+# Detect objects in an image
+results = detector.detect('image.jpg')
+
+# Process video stream
+detector.process_video('video.mp4', output='output.mp4')</code></pre>
+            </div>
+        </section>
+
+        <section id="methods">
+            <h2>Methods</h2>
+            <div class="method-grid">
+                <div class="method-doc">
+                    <h3>detect(source)</h3>
+                    <p>Detect objects in an image or video frame.</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>source</code> (str | np.ndarray): Path to image or numpy array</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>List[Detection]</code>: List of detected objects with coordinates and confidence scores</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>process_video(source, output=None)</h3>
+                    <p>Process video file or stream and detect objects in each frame.</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>source</code> (str): Path to video file or stream URL</li>
+                            <li><code>output</code> (str, optional): Path to save output video</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>set_model(model_path)</h3>
+                    <p>Load a custom YOLOv8 model for detection.</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>model_path</code> (str): Path to custom model weights</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="examples">
+            <h2>Examples</h2>
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>Basic Detection</h3>
+                    <pre><code>from yolozone import Objects
+
+detector = Objects()
+results = detector.detect('image.jpg')
+
+for obj in results:
+    print(f"Found {obj.class_name} with confidence {obj.confidence}")</code></pre>
+                </div>
+
+                <div class="example-card">
+                    <h3>Custom Model</h3>
+                    <pre><code>detector = Objects()
+detector.set_model('path/to/custom/model.pt')
+results = detector.detect('image.jpg')</code></pre>
+                </div>
+
+                <div class="example-card">
+                    <h3>Video Processing</h3>
+                    <pre><code>detector = Objects()
+detector.process_video(
+    'input.mp4',
+    output='output.mp4'
+)</code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>YoloZone</h3>
+                <p>Built with ❤️ by Nushan Kodikara</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links</h3>
+                <ul>
+                    <li><a href="https://github.com/nushankodikara/" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/nushan-kodikara/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>nushankodi@gmail.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+</html> 

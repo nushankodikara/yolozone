@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pose Estimation Examples - YoloZone | Implementation Guide & Code Samples</title>
+    <meta name="description" content="Comprehensive examples and tutorials for implementing human pose estimation using YoloZone. Learn pose detection, keypoint analysis, and real-time tracking.">
+    <meta name="keywords" content="pose estimation examples, human pose detection tutorial, keypoint detection code, YOLOv8 pose tutorial, motion tracking examples">
+    <meta name="author" content="Nushan Kodikara">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Pose Estimation Examples - YoloZone">
+    <meta property="og:description" content="Comprehensive examples and tutorials for implementing human pose estimation using YoloZone.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://nushankodikara.github.io/yolozone/examples/pose.html">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Pose Estimation Examples - YoloZone">
+    <meta name="twitter:description" content="Comprehensive examples and tutorials for implementing human pose estimation using YoloZone.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nushankodikara.github.io/yolozone/examples/pose.html">
+    
+    <!-- Fonts and Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <!-- Theme Script -->
+    <script>
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand"><a href="../index.html">YoloZone</a></div>
+        <ul style="display: flex; justify-content: center; align-items: center;">
+            <li><a href="../index.html#overview">Overview</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="../index.html#examples">Examples</a></li>
+            <li><a href="../index.html#installation">Installation</a></li>
+            <li>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path class="sun" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        <path class="moon" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Pose Estimation Examples</h1>
+        <p>Human pose detection and analysis using YoloZone</p>
+    </header>
+
+    <main>
+        <section id="basic-pose">
+            <h2>Basic Pose Detection</h2>
+            <div class="example-container">
+                <div class="example-code">
+                    <pre><code>from yolozone.pose import PoseDetector
+import cv2
+
+# Initialize detector
+detector = PoseDetector(model="yolov8n-pose.pt")
+
+def process_image(image_path):
+    # Read image
+    img = cv2.imread(image_path)
+    
+    # Detect poses
+    results = detector.detect_pose(img, conf=0.3)
+    
+    # Draw poses with keypoints and skeleton
+    img, poses = detector.draw_poses(img, results,
+                                   draw_keypoints=True,
+                                   draw_skeleton=True)
+    
+    # Display results
+    cv2.imshow("Pose Detection", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()</code></pre>
+                </div>
+                <div class="example-output">
+                    <img src="../images/pose-01.png" alt="Pose Detection Output">
+                    <p>Example showing detected poses with keypoints and skeleton</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="video-pose">
+            <h2>Real-time Pose Detection</h2>
+            <div class="example-container">
+                <div class="example-code">
+                    <pre><code>def process_video(video_path):
+    cap = cv2.VideoCapture(video_path)
+    
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        # Detect poses
+        results = detector.detect_pose(frame, conf=0.3)
+        
+        # Get keypoints
+        keypoints = detector.get_keypoints(results)
+        
+        # Draw poses
+        frame, poses = detector.draw_poses(frame, results)
+        
+        # Display keypoint information
+        for person_idx, person_kpts in enumerate(keypoints):
+            y_pos = 30
+            cv2.putText(frame, f"Person {person_idx + 1}", 
+                       (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX,
+                       0.8, (0, 255, 0), 2)
+            
+            # Display confidence for key joints
+            joints = ["nose", "left_shoulder", "right_shoulder",
+                     "left_hip", "right_hip"]
+            for idx, joint in enumerate(joints):
+                conf = person_kpts[idx][2]
+                y_pos += 25
+                cv2.putText(frame, f"{joint}: {conf:.2f}",
+                           (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX,
+                           0.6, (0, 255, 0), 2)
+        
+        cv2.imshow("Pose Detection", frame)
+        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    
+    cap.release()
+    cv2.destroyAllWindows()</code></pre>
+                </div>
+                <div class="example-explanation">
+                    <h3>Features</h3>
+                    <ul>
+                        <li>Real-time pose detection</li>
+                        <li>Multi-person tracking</li>
+                        <li>Keypoint confidence scores</li>
+                        <li>Skeleton visualization</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="keypoint-analysis">
+            <h2>Keypoint Analysis</h2>
+            <div class="example-container">
+                <div class="example-code">
+                    <pre><code># Analyze specific keypoints
+def analyze_pose(keypoints):
+    # Check if person is standing
+    left_ankle = keypoints[15]
+    right_ankle = keypoints[16]
+    left_hip = keypoints[11]
+    right_hip = keypoints[12]
+    
+    if all(kp[2] > 0.5 for kp in [left_ankle, right_ankle,
+                                 left_hip, right_hip]):
+        # Calculate vertical alignment
+        hip_y = (left_hip[1] + right_hip[1]) / 2
+        ankle_y = (left_ankle[1] + right_ankle[1]) / 2
+        
+        if abs(hip_y - ankle_y) > 100:
+            return "Standing"
+        else:
+            return "Sitting/Crouching"
+    
+    return "Uncertain"</code></pre>
+                </div>
+                <div class="example-tips">
+                    <h3>Analysis Tips</h3>
+                    <ul>
+                        <li>Filter by confidence scores</li>
+                        <li>Consider missing keypoints</li>
+                        <li>Handle occlusions</li>
+                        <li>Use relative positions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="best-practices">
+            <h2>Best Practices</h2>
+            <ul>
+                <li>Use appropriate model size for your needs:
+                    <ul>
+                        <li>yolov8n-pose.pt: Fastest but less accurate</li>
+                        <li>yolov8s-pose.pt: Balanced speed/accuracy</li>
+                        <li>yolov8l-pose.pt: More accurate but slower</li>
+                    </ul>
+                </li>
+                <li>Ensure good lighting conditions</li>
+                <li>Position camera for clear view of subjects</li>
+                <li>Handle keypoint confidence thresholds</li>
+                <li>Consider frame resolution vs performance</li>
+            </ul>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>Troubleshooting</h2>
+            <div class="troubleshooting-tips">
+                <h3>Common Issues</h3>
+                <ul>
+                    <li>Poor Detection
+                        <ul>
+                            <li>Improve lighting</li>
+                            <li>Adjust camera position</li>
+                            <li>Use larger model</li>
+                        </ul>
+                    </li>
+                    <li>Missing Keypoints
+                        <ul>
+                            <li>Lower confidence threshold</li>
+                            <li>Handle occlusions in code</li>
+                        </ul>
+                    </li>
+                    <li>Performance Issues
+                        <ul>
+                            <li>Reduce resolution</li>
+                            <li>Use smaller model</li>
+                            <li>Process fewer frames</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>YoloZone</h3>
+                <p>Built with ❤️ by Nushan Kodikara</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links</h3>
+                <ul>
+                    <li><a href="https://github.com/nushankodikara/" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/nushan-kodikara/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>nushankodi@gmail.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+</html> 

@@ -1,6 +1,32 @@
 # YoloZone
 
-YoloZone is a helper library for detecting and analyzing human poses in images and videos using the YOLO models. It provides simple functions for finding keypoints, angles, and distances between points in a pose.
+YoloZone is a powerful computer vision toolkit built on YOLOv8, providing intuitive interfaces for object detection, pose estimation, and object tracking. It simplifies complex computer vision tasks with easy-to-use APIs and comprehensive documentation.
+
+[![Documentation](https://img.shields.io/badge/docs-visit%20now-blue)](https://nushankodikara.github.io/yolozone/)
+[![GitHub](https://img.shields.io/badge/github-follow-black)](https://github.com/nushankodikara/)
+[![LinkedIn](https://img.shields.io/badge/linkedin-connect-blue)](https://www.linkedin.com/in/nushan-kodikara/)
+
+## Features
+
+### Object Detection
+- Detect and classify objects in images and videos
+- Support for custom models and multiple detection strategies
+- Real-time processing capabilities
+- Configurable confidence thresholds
+
+### Pose Estimation
+- Advanced human pose detection and keypoint analysis
+- Real-time pose tracking
+- 17-point keypoint detection
+- Angle and distance measurements between keypoints
+- Support for multiple people in frame
+
+### Object Tracking
+- Robust object tracking across video frames
+- Motion pattern analysis
+- Trajectory data generation
+- Line crossing detection
+- Multi-object tracking
 
 ## Installation
 
@@ -8,97 +34,102 @@ YoloZone is a helper library for detecting and analyzing human poses in images a
 pip install yolozone
 ```
 
-## Keypoints / Landmarks
+## Quick Start
 
-We use the YOLO model for pose landmarks without any changes. The model returns 17 keypoints / landmarks.
-
-| Keypoint | Description |
-| -------- | -------- |
-| 0 | Nose |
-| 1 | Left Eye |
-| 2 | Right Eye |
-| 3 | Left Ear |
-| 4 | Right Ear |
-| 5 | Left Shoulder |
-| 6 | Right Shoulder |
-| 7 | Left Elbow |
-| 8 | Right Elbow |
-| 9 | Left Wrist |
-| 10 | Right Wrist |
-| 11 | Left Hip |
-| 12 | Right Hip |
-| 13 | Left Knee |
-| 14 | Right Knee |
-| 15 | Left Ankle |
-| 16 | Right Ankle |
-
-## Usage
-
+### Object Detection
 ```python
-from yolozone import PoseDetector
-import cv2
+from yolozone import Objects
 
-model = PoseDetector(model="yolov8n-pose.pt") # Initialize model
-cap = cv2.VideoCapture(0) # Initialize video capture for webcam / cameras
-# cap = cv2.VideoCapture("test/video.mp4") # Initialize video capture for video
+# Initialize detector
+detector = Objects()
 
-while True:
-    try:
-        ret, frame = cap.read() # Read frame
-        
-        # Find keypoints
-        keypoints = model.find_keypoints(frame, device="mps")
+# Detect objects in an image
+results = detector.detect('image.jpg')
 
-        # Get Points and Lines to Draw pose
-        points, lines = model.draw_pose(keypoints)
-
-        # Draw points
-        for point in points:
-            cv2.circle(frame, point, 5, (255, 255, 255), 2)
-        
-        # Draw lines
-        for line in lines:
-            cv2.line(frame, line[0], line[1], (255, 255, 255), 2) # line[0] and line[1] are starting and ending points of the line
-        
-        # Find angle between Left Shoulder (5) , Left Elbow (7) and Left Wrist (9)
-        angle, text, text_position = model.angle_between_3_points(keypoints, 5, 7, 9)
-        cv2.putText(frame, text, text_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-        cv2.circle(frame, text_position, 5, (255, 0, 0), -1)
-
-        # Find distance between Left Shoulder (5) and Left Wrist (9)
-        distance, text, text_position, pointOutA, pointOutB = model.distance_between_2_points(keypoints, 5, 9)
-        cv2.putText(frame, text, text_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv2.line(frame, pointOutA, pointOutB, (0, 255, 0), 2)
-
-        # Find distance between Right Shoulder (6) and Right Wrist (10)
-        distance, text, text_position, pointOutC, pointOutD = model.distance_between_2_points(keypoints, 6, 10)
-        cv2.putText(frame, text, text_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv2.line(frame, pointOutC, pointOutD, (0, 255, 0), 2)
-
-        # Find the angle between Left Shoulder (5), Left Wrist (9) and Right Shoulder (6), Right Wrist (10)
-        angle, text, text_position = model.angle_between_2_lines(keypoints, 5, 9, 6, 10)
-        cv2.putText(frame, text, text_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-    
-    except Exception as e:
-        print(e)
-        pass
-
-    cv2.imshow("frame", frame)
-    cv2.waitKey(1)
+# Process video stream
+detector.process_video('video.mp4', output='output.mp4')
 ```
 
-## Features
+### Pose Estimation
+```python
+from yolozone import Pose
 
-### Pose Detection (WIP)
-- [x] Keypoints / Landmarks
-- [x] Angles between 3 points
-- [x] Distance between 2 points
-- [x] Angle between 2 lines
+# Initialize pose estimator
+pose = Pose()
 
-### Object Detection (WIP)
+# Detect poses in an image
+results = pose.detect('image.jpg')
 
-### Face Detection (WIP)
+# Get keypoints
+for detection in results:
+    keypoints = pose.get_keypoints(detection)
+    print(f"Found person with {len(keypoints)} keypoints")
+```
+
+### Object Tracking
+```python
+from yolozone import Tracker
+
+# Initialize tracker
+tracker = Tracker()
+
+# Track objects in video
+tracks = tracker.track_video('video.mp4')
+
+# Analyze motion patterns
+for track in tracks:
+    motion = tracker.analyze_motion(track)
+    print(f"Track {track.id}: {motion.pattern}")
+```
+
+## Keypoint Reference
+
+The pose estimation module uses the following 17 keypoints:
+
+| ID | Keypoint | ID | Keypoint |
+|----|----------|----|----------|
+| 0 | Nose | 9 | Left Wrist |
+| 1 | Left Eye | 10 | Right Wrist |
+| 2 | Right Eye | 11 | Left Hip |
+| 3 | Left Ear | 12 | Right Hip |
+| 4 | Right Ear | 13 | Left Knee |
+| 5 | Left Shoulder | 14 | Right Knee |
+| 6 | Right Shoulder | 15 | Left Ankle |
+| 7 | Left Elbow | 16 | Right Ankle |
+| 8 | Right Elbow | | |
+
+## Documentation
+
+Visit our [comprehensive documentation](https://nushankodikara.github.io/yolozone/) for:
+- Detailed API references
+- Code examples
+- Implementation guides
+- Best practices
+- Troubleshooting tips
+
+## Requirements
+
+- Python 3.7+
+- ultralytics (YOLOv8)
+- opencv-python
+- numpy
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Author
+
+- **Nushan Kodikara**
+  - GitHub: [@nushankodikara](https://github.com/nushankodikara)
+  - LinkedIn: [Nushan Kodikara](https://www.linkedin.com/in/nushan-kodikara/)
+  - Email: nushankodi@gmail.com
 
 ## References
 
-- [Ultralytics YOLOv8](https://docs.ultralytics.com/tasks/pose/)
+- [Ultralytics YOLOv8](https://docs.ultralytics.com/)
+- [YOLOv8 Pose Estimation](https://docs.ultralytics.com/tasks/pose/)
