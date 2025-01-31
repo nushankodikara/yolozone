@@ -1,3 +1,6 @@
+<!-- Image Banner -->
+![YoloZone](https://github.com/nushankodikara/yolozone/blob/main/YoloZone.png?raw=true)
+
 # YoloZone
 
 YoloZone is a powerful computer vision toolkit built on YOLOv8, providing intuitive interfaces for object detection, pose estimation, and object tracking. It simplifies complex computer vision tasks with easy-to-use APIs and comprehensive documentation.
