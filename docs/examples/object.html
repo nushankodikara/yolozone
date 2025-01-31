@@ -59,82 +59,194 @@
     </header>
 
     <main>
+        <section id="showcase">
+            <h2>Example Outputs</h2>
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <div class="image-container">
+                        <img src="../images/object-01.png" style="width:100%" alt="Basic object detection example showing multiple objects detected in a street scene">
+                        <div class="image-caption">
+                            <h3>Basic Object Detection</h3>
+                            <p>Detection results showing bounding boxes, class labels, and confidence scores for common objects in a street scene.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-item">
+                    <div class="image-container">
+                        <img src="../images/object-02.png" style="width:100%" alt="Advanced detection example with filtered classes and custom visualization">
+                        <div class="image-caption">
+                            <h3>Advanced Detection</h3>
+                            <p>Filtered detection results focusing on specific classes with custom visualization settings and object tracking.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="basic-detection">
             <h2>Basic Object Detection</h2>
             <div class="example-container">
                 <div class="example-code">
-                    <pre><code>import sys
-import os
-from yolozone.objects import ObjectDetector
+                    <pre><code>from yolozone import ObjectDetector
 import cv2
 
-# Initialize detector
-detector = ObjectDetector(model="yolov8n.pt")
+# Initialize detector with default model
+detector = ObjectDetector()
 
 # Read image
 img = cv2.imread("image.jpg")
 
-# Detect objects
-results = detector.detect_objects(img, conf=0.3)
+# Detect objects with custom confidence threshold
+results = detector.detect_objects(
+    img, 
+    device="cpu",  # Use CPU for inference
+    conf=0.35      # Set confidence threshold
+)
 
-# Draw detections
-img, detections = detector.draw_detections(img, results)
+# Draw detections with custom color
+img, detections = detector.draw_detections(
+    img, 
+    results,
+    color=(0, 255, 0),  # Green color
+    thickness=2         # Line thickness
+)
 
-# Print detections
+# Print detected objects
 for class_name, conf, box in detections:
-    print(f"Found {class_name} with confidence {conf:.2f}")</code></pre>
+    x1, y1, x2, y2 = box
+    print(f"Found {class_name} at ({x1},{y1},{x2},{y2}) with confidence {conf:.2f}")
+
+# Save output image
+cv2.imwrite("output.jpg", img)</code></pre>
                 </div>
-                <div class="example-output">
-                    <img src="../images/object-01.png" alt="Object Detection Output">
-                    <p>Example output showing detected objects with bounding boxes and labels</p>
+                <div class="example-explanation">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li>Configurable confidence threshold for filtering detections</li>
+                        <li>Device selection (CPU/CUDA/MPS) for optimal performance</li>
+                        <li>Customizable visualization options</li>
+                        <li>Detailed detection information including coordinates</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
         <section id="video-detection">
-            <h2>Video Object Detection</h2>
+            <h2>Real-time Video Detection</h2>
             <div class="example-container">
                 <div class="example-code">
-                    <pre><code>def process_video(video_path, detector):
-    cap = cv2.VideoCapture(video_path)
+                    <pre><code>import cv2
+from yolozone import ObjectDetector
+
+# Initialize detector
+detector = ObjectDetector(model="yolov8s.pt")
+
+# Open video capture
+cap = cv2.VideoCapture(0)  # Use 0 for webcam
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+        
+    # Detect objects with tracking enabled
+    results = detector.detect_objects(
+        frame,
+        device="cpu",
+        conf=0.35,
+        track=True  # Enable tracking
+    )
     
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-            
-        # Detect objects
-        results = detector.detect_objects(frame, conf=0.3)
-        
-        # Draw detections
-        frame, detections = detector.draw_detections(frame, results)
-        
-        # Count objects by class
-        counts = detector.count_objects(results)
-        
-        # Display counts
-        y_pos = 30
-        for cls, count in counts.items():
-            cv2.putText(frame, f"{cls}: {count}", 
-                       (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 
-                       0.8, (0, 255, 0), 2)
-            y_pos += 30
-            
-        cv2.imshow("Object Detection", frame)
-        
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-            
-    cap.release()
-    cv2.destroyAllWindows()</code></pre>
+    # Draw detections
+    frame, detections = detector.draw_detections(frame, results)
+    
+    # Count objects by class
+    counts = detector.count_objects(results)
+    
+    # Display counts
+    y_pos = 30
+    for cls, count in counts.items():
+        text = f"{cls}: {count}"
+        cv2.putText(frame, text, (10, y_pos), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, 
+                   (0, 255, 0), 2)
+        y_pos += 25
+    
+    # Show frame
+    cv2.imshow("Object Detection", frame)
+    
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</code></pre>
                 </div>
                 <div class="example-explanation">
-                    <h3>Key Features</h3>
+                    <h3>Features Demonstrated</h3>
                     <ul>
-                        <li>Real-time object detection in video streams</li>
-                        <li>Object counting by class</li>
+                        <li>Real-time video processing</li>
+                        <li>Object tracking integration</li>
+                        <li>Live object counting</li>
                         <li>On-screen statistics display</li>
-                        <li>Configurable confidence threshold</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="advanced-detection">
+            <h2>Advanced Detection Features</h2>
+            <div class="example-container">
+                <div class="example-code">
+                    <pre><code># Initialize with a specific model
+detector = ObjectDetector(model="yolov8l.pt")  # Larger model for better accuracy
+
+# Define classes of interest
+target_classes = ['person', 'car', 'truck', 'bicycle']
+
+# Process image
+results = detector.detect_objects(
+    img,
+    device="cuda",  # Use GPU if available
+    conf=0.4        # Higher confidence threshold
+)
+
+# Get filtered detections
+img, detections = detector.draw_detections(
+    img,
+    results,
+    classes=target_classes,  # Only show specified classes
+    color=(255, 0, 0),      # Red color for boxes
+    thickness=2
+)
+
+# Get object counts
+counts = detector.count_objects(results, classes=target_classes)
+print("\nObject Counts:")
+for cls, count in counts.items():
+    print(f"{cls}: {count}")
+
+# Get object centers for analysis
+centers = detector.get_object_centers(results)
+print("\nObject Centers:")
+for cls, points in centers.items():
+    print(f"{cls}: {len(points)} objects found")
+    for x, y in points:
+        print(f"  - Center at ({x}, {y})")</code></pre>
+                </div>
+                <div class="example-tips">
+                    <h3>Advanced Features</h3>
+                    <ul>
+                        <li>Class filtering for targeted detection</li>
+                        <li>Object center point calculation</li>
+                        <li>Custom model selection</li>
+                        <li>GPU acceleration support</li>
+                    </ul>
+                    <h3>Performance Tips</h3>
+                    <ul>
+                        <li>Use appropriate model size for your needs (n/s/m/l/x)</li>
+                        <li>Adjust confidence threshold based on use case</li>
+                        <li>Enable GPU acceleration for faster processing</li>
+                        <li>Filter classes to reduce processing overhead</li>
                     </ul>
                 </div>
             </div>

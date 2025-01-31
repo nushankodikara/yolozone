@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pose Estimation Module - YoloZone | Human Pose Detection & Analysis</title>
     <meta name="description" content="YoloZone's Pose Estimation module enables advanced human pose detection and keypoint analysis using YOLOv8's pose estimation capabilities.">
-    <meta name="keywords" content="pose estimation, human pose detection, keypoint detection, YOLOv8, computer vision, motion tracking">
+    <meta name="keywords" content="pose estimation, human pose detection, keypoint detection, YOLOv8, computer vision, motion tracking, angle measurement">
     <meta name="author" content="Nushan Kodikara">
     
     <!-- Open Graph / Social Media Meta Tags -->
@@ -55,28 +55,136 @@
 
     <header>
         <h1>Pose Module</h1>
-        <p>Advanced human pose estimation and keypoint detection</p>
+        <p>Advanced human pose estimation and analysis capabilities</p>
     </header>
 
     <main>
         <section id="overview">
             <h2>Overview</h2>
-            <p>The Pose module provides sophisticated human pose estimation capabilities using YOLOv8's pose estimation model. Track and analyze human poses in real-time with high accuracy.</p>
+            <p>The Pose module provides powerful capabilities for human pose estimation and analysis using YOLOv8. It enables accurate keypoint detection, angle measurements, distance calculations, and pose visualization.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <h3>Keypoint Detection</h3>
+                    <p>17-point keypoint detection for comprehensive human pose analysis</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2v4m0 12v4m-10-10h4m12 0h4"></path>
+                    </svg>
+                    <h3>Angle Analysis</h3>
+                    <p>Calculate angles between joints and body segments</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    <h3>Distance Measurement</h3>
+                    <p>Measure distances between any two keypoints</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 3v18m-10-18v18M3 7h18M3 17h18"></path>
+                    </svg>
+                    <h3>Pose Visualization</h3>
+                    <p>Draw pose skeletons with automatic connection handling</p>
+                </div>
+            </div>
         </section>
 
         <section id="installation">
-            <h2>Usage</h2>
+            <h2>Installation</h2>
             <div class="installation-card">
-                <pre><code>from yolozone import Pose
+                <pre><code>pip install yolozone</code></pre>
+            </div>
+        </section>
 
-# Initialize pose estimator
-pose = Pose()
+        <section id="initialization">
+            <h2>Initialization</h2>
+            <div class="code-block">
+                <pre><code>from yolozone import PoseDetector
 
-# Detect poses in an image
-results = pose.detect('image.jpg')
+# Initialize with default model
+detector = PoseDetector()
 
-# Process video with pose detection
-pose.process_video('video.mp4', output='output.mp4')</code></pre>
+# Initialize with custom model
+detector = PoseDetector(model="path/to/custom/model.pt")</code></pre>
+            </div>
+        </section>
+
+        <section id="keypoints">
+            <h2>Keypoint Reference</h2>
+            <div class="keypoint-grid">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Keypoint</th>
+                            <th>ID</th>
+                            <th>Keypoint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>Nose</td>
+                            <td>9</td>
+                            <td>Left Wrist</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Left Eye</td>
+                            <td>10</td>
+                            <td>Right Wrist</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Right Eye</td>
+                            <td>11</td>
+                            <td>Left Hip</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Left Ear</td>
+                            <td>12</td>
+                            <td>Right Hip</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Right Ear</td>
+                            <td>13</td>
+                            <td>Left Knee</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Left Shoulder</td>
+                            <td>14</td>
+                            <td>Right Knee</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Right Shoulder</td>
+                            <td>15</td>
+                            <td>Left Ankle</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Left Elbow</td>
+                            <td>16</td>
+                            <td>Right Ankle</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Right Elbow</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
@@ -84,85 +192,240 @@ pose.process_video('video.mp4', output='output.mp4')</code></pre>
             <h2>Methods</h2>
             <div class="method-grid">
                 <div class="method-doc">
-                    <h3>detect(source)</h3>
-                    <p>Detect human poses and keypoints in an image or video frame.</p>
+                    <h3>__init__(model="yolov8s-pose.pt")</h3>
+                    <p>Initialize the pose detector with a YOLO model</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>source</code> (str | np.ndarray): Path to image or numpy array</li>
-                        </ul>
-                        <h4>Returns</h4>
-                        <ul>
-                            <li><code>List[PoseDetection]</code>: List of detected poses with keypoints and confidence scores</li>
+                            <li><code>model</code> (str): Path to YOLO pose model weights (default: "yolov8s-pose.pt")</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="method-doc">
-                    <h3>process_video(source, output=None)</h3>
-                    <p>Process video file or stream and detect poses in each frame.</p>
+                    <h3>find_keypoints(img, device="cpu")</h3>
+                    <p>Detect human pose keypoints in an image</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>source</code> (str): Path to video file or stream URL</li>
-                            <li><code>output</code> (str, optional): Path to save output video</li>
+                            <li><code>img</code> (numpy.ndarray): Input image</li>
+                            <li><code>device</code> (str): Device to run inference on ('cpu', 'cuda', 'mps')</li>
                         </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>numpy.ndarray</code>: Array of detected keypoints</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code>keypoints = detector.find_keypoints(
+    image,
+    device="cuda"
+)</code></pre>
                     </div>
                 </div>
 
                 <div class="method-doc">
-                    <h3>get_keypoints(detection)</h3>
-                    <p>Extract keypoint coordinates from a pose detection.</p>
+                    <h3>angle_between_3_points(keypoints, point1, point2, point3, subject_index=0)</h3>
+                    <p>Calculate the angle between three keypoints</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>detection</code> (PoseDetection): A pose detection result</li>
+                            <li><code>keypoints</code>: Detected keypoints from find_keypoints()</li>
+                            <li><code>point1</code> (int): First keypoint ID</li>
+                            <li><code>point2</code> (int): Second keypoint ID (vertex)</li>
+                            <li><code>point3</code> (int): Third keypoint ID</li>
+                            <li><code>subject_index</code> (int): Index of the person in multi-person detection</li>
                         </ul>
                         <h4>Returns</h4>
                         <ul>
-                            <li><code>Dict[str, Tuple]</code>: Dictionary mapping keypoint names to coordinates</li>
+                            <li><code>tuple</code>: (angle in degrees, formatted text, text position)</li>
                         </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Calculate elbow angle (shoulder-elbow-wrist)
+angle, text, pos = detector.angle_between_3_points(
+    keypoints, 5, 7, 9  # Left shoulder, elbow, wrist
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>distance_between_2_points(keypoints, point1, point2, subject_index=0)</h3>
+                    <p>Calculate the distance between two keypoints</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>keypoints</code>: Detected keypoints from find_keypoints()</li>
+                            <li><code>point1</code> (int): First keypoint ID</li>
+                            <li><code>point2</code> (int): Second keypoint ID</li>
+                            <li><code>subject_index</code> (int): Index of the person in multi-person detection</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>tuple</code>: (distance, formatted text, text position, point1 coords, point2 coords)</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Measure arm length (shoulder to wrist)
+dist, text, pos, p1, p2 = detector.distance_between_2_points(
+    keypoints, 5, 9  # Left shoulder to left wrist
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>angle_between_2_lines(keypoints, point1, point2, point3, point4, subject_index=0)</h3>
+                    <p>Calculate the angle between two lines defined by four points</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>keypoints</code>: Detected keypoints from find_keypoints()</li>
+                            <li><code>point1, point2</code> (int): Points defining first line</li>
+                            <li><code>point3, point4</code> (int): Points defining second line</li>
+                            <li><code>subject_index</code> (int): Index of the person in multi-person detection</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>tuple</code>: (angle in degrees, formatted text, text position)</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Calculate angle between arms
+angle, text, pos = detector.angle_between_2_lines(
+    keypoints, 5, 9, 6, 10  # Left arm vs right arm
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>draw_pose(keypoints, subject_index=0)</h3>
+                    <p>Generate points and lines for drawing the pose skeleton</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>keypoints</code>: Detected keypoints from find_keypoints()</li>
+                            <li><code>subject_index</code> (int): Index of the person in multi-person detection</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>tuple</code>: (array of points, array of line pairs)</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code>points, lines = detector.draw_pose(keypoints)
+
+# Draw points
+for point in points:
+    cv2.circle(image, point, 5, (255, 255, 255), 2)
+
+# Draw lines
+for line in lines:
+    cv2.line(image, line[0], line[1], (255, 255, 255), 2)</code></pre>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="examples">
-            <h2>Examples</h2>
+            <h2>Complete Examples</h2>
             <div class="example-grid">
                 <div class="example-card">
                     <h3>Basic Pose Detection</h3>
-                    <pre><code>from yolozone import Pose
+                    <pre><code>from yolozone import PoseDetector
+import cv2
 
-pose = Pose()
-results = pose.detect('image.jpg')
+# Initialize detector
+detector = PoseDetector()
 
-for detection in results:
-    keypoints = pose.get_keypoints(detection)
-    print(f"Found person with {len(keypoints)} keypoints")</code></pre>
+# Read image
+image = cv2.imread('person.jpg')
+
+# Detect keypoints
+keypoints = detector.find_keypoints(image)
+
+# Draw pose
+points, lines = detector.draw_pose(keypoints)
+
+# Visualize
+for point in points:
+    cv2.circle(image, point, 5, (255, 255, 255), 2)
+for line in lines:
+    cv2.line(image, line[0], line[1], (255, 255, 255), 2)
+
+cv2.imshow('Pose Detection', image)
+cv2.waitKey(0)</code></pre>
                 </div>
 
                 <div class="example-card">
-                    <h3>Real-time Processing</h3>
-                    <pre><code>pose = Pose()
-# Process webcam feed
-pose.process_video(0, output='poses.mp4')</code></pre>
+                    <h3>Real-time Pose Analysis</h3>
+                    <pre><code>import cv2
+
+detector = PoseDetector()
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+        
+    # Detect pose
+    keypoints = detector.find_keypoints(frame)
+    
+    # Draw skeleton
+    points, lines = detector.draw_pose(keypoints)
+    for point in points:
+        cv2.circle(frame, point, 5, (255, 255, 255), 2)
+    for line in lines:
+        cv2.line(frame, line[0], line[1], (255, 255, 255), 2)
+    
+    # Calculate and display angles
+    angle, text, pos = detector.angle_between_3_points(
+        keypoints, 5, 7, 9  # Left arm angle
+    )
+    cv2.putText(frame, text, pos, cv2.FONT_HERSHEY_SIMPLEX, 
+                1, (0, 255, 0), 2)
+    
+    cv2.imshow('Real-time Pose', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</code></pre>
                 </div>
 
                 <div class="example-card">
-                    <h3>Keypoint Analysis</h3>
-                    <pre><code>results = pose.detect('exercise.jpg')
-for detection in results:
-    keypoints = pose.get_keypoints(detection)
-    
-    # Access specific keypoints
-    left_shoulder = keypoints['left_shoulder']
-    right_shoulder = keypoints['right_shoulder']
-    
-    # Calculate shoulder width
-    shoulder_width = abs(
-        left_shoulder[0] - right_shoulder[0]
-    )</code></pre>
+                    <h3>Advanced Measurements</h3>
+                    <pre><code># Detect pose
+keypoints = detector.find_keypoints(image)
+
+# Measure arm angles
+left_arm, text1, pos1 = detector.angle_between_3_points(
+    keypoints, 5, 7, 9  # Left shoulder-elbow-wrist
+)
+right_arm, text2, pos2 = detector.angle_between_3_points(
+    keypoints, 6, 8, 10  # Right shoulder-elbow-wrist
+)
+
+# Measure distances
+torso_length, text3, pos3, p1, p2 = detector.distance_between_2_points(
+    keypoints, 5, 11  # Shoulder to hip
+)
+
+# Calculate angle between arms
+arms_angle, text4, pos4 = detector.angle_between_2_lines(
+    keypoints, 5, 9, 6, 10  # Left vs right arm
+)
+
+# Draw measurements on image
+cv2.putText(image, text1, pos1, cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+cv2.putText(image, text2, pos2, cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+cv2.putText(image, text3, pos3, cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2)
+cv2.putText(image, text4, pos4, cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)</code></pre>
                 </div>
             </div>
         </section>

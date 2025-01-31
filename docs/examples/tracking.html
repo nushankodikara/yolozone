@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Object Tracking Examples - YoloZone | Motion Analysis & Tracking Guide</title>
-    <meta name="description" content="Detailed examples and tutorials for implementing object tracking and motion analysis using YoloZone. Learn trajectory tracking, line crossing detection, and movement analysis.">
-    <meta name="keywords" content="object tracking tutorial, motion analysis examples, trajectory tracking code, YOLOv8 tracking, line crossing detection, movement analysis">
+    <title>Object Tracking Examples - YoloZone | Traffic Analysis & Motion Tracking</title>
+    <meta name="description" content="Complete examples and tutorials for object tracking and traffic analysis using YoloZone. Learn how to implement vehicle counting and motion pattern analysis.">
+    <meta name="keywords" content="object tracking, traffic analysis, vehicle counting, motion tracking, YOLOv8, computer vision, line crossing detection">
     <meta name="author" content="Nushan Kodikara">
     
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:title" content="Object Tracking Examples - YoloZone">
-    <meta property="og:description" content="Detailed examples and tutorials for implementing object tracking and motion analysis using YoloZone.">
+    <meta property="og:description" content="Complete examples and tutorials for implementing object tracking and traffic analysis using YoloZone.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://nushankodikara.github.io/yolozone/examples/tracking.html">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Object Tracking Examples - YoloZone">
-    <meta name="twitter:description" content="Detailed examples and tutorials for implementing object tracking and motion analysis using YoloZone.">
+    <meta name="twitter:description" content="Complete examples and tutorials for implementing object tracking and traffic analysis using YoloZone.">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://nushankodikara.github.io/yolozone/examples/tracking.html">
@@ -55,177 +55,270 @@
 
     <header>
         <h1>Object Tracking Examples</h1>
-        <p>Advanced object tracking and movement analysis examples</p>
+        <p>Complete examples of object tracking and traffic analysis using YoloZone</p>
     </header>
 
     <main>
-        <section id="basic-tracking">
-            <h2>Basic Object Tracking</h2>
-            <div class="example-container">
-                <div class="example-code">
-                    <pre><code>from yolozone.objects import ObjectDetector
-import cv2
-
-# Initialize detector
-detector = ObjectDetector(model="yolov8n.pt")
-
-def process_video(video_path):
-    cap = cv2.VideoCapture(video_path)
-    
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        
-        # Detect and track objects
-        results = detector.detect_objects(frame, conf=0.3, track=True)
-        
-        # Update tracks
-        tracks = detector.tracker.update(results)
-        
-        # Draw tracks with trails
-        frame = detector.tracker.draw_tracks(frame, tracks, draw_trails=True)
-        
-        # Display frame
-        cv2.imshow("Object Tracking", frame)
-        
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    
-    cap.release()
-    cv2.destroyAllWindows()</code></pre>
+        <section id="showcase">
+            <h2>Example Outputs</h2>
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <div class="image-container">
+                        <img src="../images/tracking-01.png" style="width:100%" alt="Traffic monitoring example showing vehicle tracking and counting">
+                        <div class="image-caption">
+                            <h3>Traffic Monitoring</h3>
+                            <p>Real-time vehicle tracking with motion trails and directional counting statistics.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="example-explanation">
-                    <h3>Features</h3>
-                    <ul>
-                        <li>Unique ID assignment for each object</li>
-                        <li>Motion trail visualization</li>
-                        <li>Persistent tracking across frames</li>
-                        <li>Automatic track management</li>
-                    </ul>
+                <div class="showcase-item">
+                    <div class="image-container">
+                        <img src="../images/tracking-02.png" style="width:100%" alt="Advanced tracking showing line crossing detection and vehicle classification">
+                        <div class="image-caption">
+                            <h3>Line Crossing Analysis</h3>
+                            <p>Vehicle counting with class-specific statistics and bi-directional flow analysis.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="line-crossing">
-            <h2>Line Crossing Detection</h2>
+        <section id="traffic-monitoring">
+            <h2>Traffic Monitoring</h2>
             <div class="example-container">
                 <div class="example-code">
-                    <pre><code># Define counting line
-line_start = (0, frame_height // 2)
-line_end = (frame_width, frame_height // 2)
+                    <pre><code>from yolozone import ObjectDetector
+import cv2
+from collections import defaultdict
 
-# Process video with line crossing detection
 def process_tracking_video(video_path, detector):
+    """Process a video with object tracking"""
     cap = cv2.VideoCapture(video_path)
     
-    # Initialize cumulative counts
+    # Get video properties
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    
+    # Define counting line in middle of frame
+    line_start = (0, frame_height // 2)
+    line_end = (frame_width, frame_height // 2)
+    
+    # Initialize counts
     total_counts = {
         'up': defaultdict(int),
         'down': defaultdict(int)
     }
     
+    # Define vehicle classes to track
+    vehicle_classes = ['car', 'truck', 'bus', 'motorcycle']
+    
     while True:
         ret, frame = cap.read()
         if not ret:
             break
+            
+        # Detect and track objects
+        results = detector.detect_objects(
+            frame, 
+            conf=0.3,
+            track=True  # Enable tracking
+        )
         
-        # Detect and track
-        results = detector.detect_objects(frame, conf=0.3, track=True)
+        # Update tracks
         tracks = detector.tracker.update(results)
         
         # Update line crossings
         crossings = detector.tracker.update_line_crossings(
-            tracks, line_start, line_end)
+            tracks, 
+            line_start, 
+            line_end
+        )
         
         # Update total counts
         for direction in ['up', 'down']:
             for cls, count in crossings[direction].items():
                 total_counts[direction][cls] += count
         
-        # Draw visualization
-        frame = detector.tracker.draw_tracks(frame, tracks)
+        # Draw detections and tracks
+        frame, detections = detector.draw_detections(
+            frame, 
+            results, 
+            classes=vehicle_classes
+        )
+        frame = detector.tracker.draw_tracks(
+            frame, 
+            tracks, 
+            draw_trails=True
+        )
+        
+        # Draw counting line and stats
         frame = detector.tracker.draw_counting_line(
-            frame, line_start, line_end, total_counts)
+            frame, 
+            line_start, 
+            line_end, 
+            total_counts
+        )
         
-        cv2.imshow("Line Crossing Detection", frame)
-        
+        cv2.imshow("Traffic Monitoring", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     
-    print("Final Counts:", dict(total_counts))</code></pre>
-                </div>
-                <div class="example-output">
-                    <img src="../images/tracking-01.png" alt="Line Crossing Detection">
-                    <p>Example showing line crossing detection with counts</p>
-                </div>
-            </div>
-        </section>
+    cap.release()
+    cv2.destroyAllWindows()
 
-        <section id="advanced-tracking">
-            <h2>Advanced Tracking Features</h2>
-            <div class="example-container">
-                <div class="example-code">
-                    <pre><code># Get detailed track information
-tracks_array = detector.tracker.get_all_tracks()
-
-for track in tracks_array:
-    print(f"Track ID: {track['track_id']}")
-    print(f"Class: {track['class']}")
-    print(f"Track Length: {track['length']}")
-    print(f"Displacement: {track['displacement']:.2f}")
-    print(f"Current Position: {track['current_pos']}")
-    print("---")</code></pre>
+# Initialize detector and process video
+detector = ObjectDetector(model="yolov8n.pt")
+process_tracking_video("traffic.mp4", detector)</code></pre>
                 </div>
-                <div class="example-tips">
-                    <h3>Advanced Features</h3>
+                <div class="example-explanation">
+                    <h3>Key Features</h3>
                     <ul>
-                        <li>Track history management</li>
-                        <li>Movement analysis</li>
-                        <li>Displacement calculation</li>
-                        <li>Track statistics</li>
+                        <li>Real-time vehicle tracking</li>
+                        <li>Bi-directional counting</li>
+                        <li>Class-specific statistics</li>
+                        <li>Motion trail visualization</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <section id="tracking-tips">
-            <h2>Tracking Best Practices</h2>
-            <ul>
-                <li>Adjust <code>max_movement_threshold</code> based on object speed</li>
-                <li>Set appropriate <code>min_detection_confidence</code> for scene</li>
-                <li>Use <code>max_inactive_frames</code> to control track persistence</li>
-                <li>Consider scene scale when setting line positions</li>
-                <li>Filter relevant classes to improve tracking stability</li>
-                <li>Handle track ID management for long-term tracking</li>
-            </ul>
-        </section>
+        <section id="advanced-tracking">
+            <h2>Advanced Tracking Analysis</h2>
+            <div class="example-container">
+                <div class="example-code">
+                    <pre><code>def analyze_traffic_patterns(video_path, detector):
+    """Advanced traffic analysis with detailed statistics"""
+    cap = cv2.VideoCapture(video_path)
+    frame_count = 0
+    
+    # Get video dimensions
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    
+    # Setup counting lines
+    lines = {
+        'middle': {
+            'start': (0, frame_height // 2),
+            'end': (frame_width, frame_height // 2),
+            'counts': {'up': defaultdict(int), 'down': defaultdict(int)}
+        }
+    }
+    
+    while True:
+        try:
+            ret, frame = cap.read()
+            if not ret:
+                break
+                
+            frame_count += 1
+            
+            # Process frame
+            results = detector.detect_objects(frame, conf=0.3, track=True)
+            tracks = detector.tracker.update(results)
+            
+            # Get all tracks info
+            all_tracks = detector.tracker.get_all_tracks()
+            active_tracks = len([t for t in all_tracks 
+                               if t['track_id'] not in detector.tracker.inactive_tracks])
+            
+            # Update and draw for each counting line
+            for line_id, line_info in lines.items():
+                crossings = detector.tracker.update_line_crossings(
+                    tracks,
+                    line_info['start'],
+                    line_info['end']
+                )
+                
+                # Update counts
+                for direction in ['up', 'down']:
+                    for cls, count in crossings[direction].items():
+                        line_info['counts'][direction][cls] += count
+                
+                # Draw line and counts
+                frame = detector.tracker.draw_counting_line(
+                    frame,
+                    line_info['start'],
+                    line_info['end'],
+                    line_info['counts']
+                )
+            
+            # Draw tracking visualization
+            frame, _ = detector.draw_detections(frame, results)
+            frame = detector.tracker.draw_tracks(frame, tracks, draw_trails=True)
+            
+            # Display tracking stats
+            y_pos = 30
+            stats = [
+                f"Frame: {frame_count}",
+                f"Active Tracks: {active_tracks}",
+                f"Total Tracked: {len(all_tracks)}"
+            ]
+            
+            for stat in stats:
+                cv2.putText(frame, stat, (10, y_pos),
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+                           (255, 255, 255), 2)
+                y_pos += 30
+            
+            # Show detailed counts
+            y_pos += 10
+            cv2.putText(frame, "Traffic Flow:", (10, y_pos),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+                       (0, 255, 255), 2)
+            y_pos += 30
+            
+            for cls in ['car', 'truck', 'bus', 'motorcycle']:
+                up = lines['middle']['counts']['up'][cls]
+                down = lines['middle']['counts']['down'][cls]
+                if up > 0 or down > 0:
+                    text = f"{cls}: ↑{up} ↓{down}"
+                    cv2.putText(frame, text, (10, y_pos),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                               (0, 255, 255), 2)
+                    y_pos += 25
+            
+            cv2.imshow("Advanced Traffic Analysis", frame)
+            
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
+                break
+            elif key == ord('i'):  # Press 'i' for track info
+                print("\nTrack Information:")
+                for track in all_tracks:
+                    print(f"ID: {track['track_id']}")
+                    print(f"Class: {track['class']}")
+                    print(f"Length: {track['length']} frames")
+                    print(f"Displacement: {track['displacement']:.2f}")
+                    print("---")
+                
+        except Exception as e:
+            print(f"Error on frame {frame_count}: {str(e)}")
+            continue
+    
+    cap.release()
+    cv2.destroyAllWindows()
 
-        <section id="troubleshooting">
-            <h2>Troubleshooting</h2>
-            <div class="troubleshooting-tips">
-                <h3>Common Issues</h3>
-                <ul>
-                    <li>ID Switching
-                        <ul>
-                            <li>Adjust <code>max_movement_threshold</code></li>
-                            <li>Increase <code>min_detection_confidence</code></li>
-                            <li>Reduce <code>max_size_change</code> threshold</li>
-                        </ul>
-                    </li>
-                    <li>Missing Tracks
-                        <ul>
-                            <li>Increase <code>max_inactive_frames</code></li>
-                            <li>Decrease <code>min_detection_confidence</code></li>
-                        </ul>
-                    </li>
-                    <li>False Crossings
-                        <ul>
-                            <li>Adjust line position</li>
-                            <li>Increase <code>min_hits</code> for track confirmation</li>
-                        </ul>
-                    </li>
-                </ul>
+# Initialize and run advanced analysis
+detector = ObjectDetector(model="yolov8n.pt")
+analyze_traffic_patterns("traffic.mp4", detector)</code></pre>
+                </div>
+                <div class="example-tips">
+                    <h3>Advanced Features</h3>
+                    <ul>
+                        <li>Multi-line crossing detection</li>
+                        <li>Detailed track statistics</li>
+                        <li>Interactive track information</li>
+                        <li>Comprehensive error handling</li>
+                    </ul>
+                    <h3>Performance Tips</h3>
+                    <ul>
+                        <li>Use appropriate model size for real-time processing</li>
+                        <li>Adjust confidence threshold based on scene complexity</li>
+                        <li>Implement error handling for robust operation</li>
+                        <li>Monitor and manage active tracks for optimal performance</li>
+                    </ul>
+                </div>
             </div>
         </section>
     </main>

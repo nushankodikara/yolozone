@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pose Estimation Examples - YoloZone | Implementation Guide & Code Samples</title>
-    <meta name="description" content="Comprehensive examples and tutorials for implementing human pose estimation using YoloZone. Learn pose detection, keypoint analysis, and real-time tracking.">
-    <meta name="keywords" content="pose estimation examples, human pose detection tutorial, keypoint detection code, YOLOv8 pose tutorial, motion tracking examples">
+    <title>Pose Detection Examples - YoloZone | Exercise Analysis & Motion Tracking</title>
+    <meta name="description" content="Complete examples and tutorials for human pose detection and exercise analysis using YoloZone. Learn how to implement pose tracking and motion analysis.">
+    <meta name="keywords" content="pose detection, exercise analysis, motion tracking, YOLOv8, computer vision, keypoint detection, angle measurement">
     <meta name="author" content="Nushan Kodikara">
     
     <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:title" content="Pose Estimation Examples - YoloZone">
-    <meta property="og:description" content="Comprehensive examples and tutorials for implementing human pose estimation using YoloZone.">
+    <meta property="og:title" content="Pose Detection Examples - YoloZone">
+    <meta property="og:description" content="Complete examples and tutorials for implementing pose detection and exercise analysis using YoloZone.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://nushankodikara.github.io/yolozone/examples/pose.html">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Pose Estimation Examples - YoloZone">
-    <meta name="twitter:description" content="Comprehensive examples and tutorials for implementing human pose estimation using YoloZone.">
+    <meta name="twitter:title" content="Pose Detection Examples - YoloZone">
+    <meta name="twitter:description" content="Complete examples and tutorials for implementing pose detection and exercise analysis using YoloZone.">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://nushankodikara.github.io/yolozone/examples/pose.html">
@@ -54,183 +54,251 @@
     </nav>
 
     <header>
-        <h1>Pose Estimation Examples</h1>
-        <p>Human pose detection and analysis using YoloZone</p>
+        <h1>Pose Detection Examples</h1>
+        <p>Complete examples of pose detection and exercise analysis using YoloZone</p>
     </header>
 
     <main>
-        <section id="basic-pose">
-            <h2>Basic Pose Detection</h2>
-            <div class="example-container">
-                <div class="example-code">
-                    <pre><code>from yolozone.pose import PoseDetector
-import cv2
-
-# Initialize detector
-detector = PoseDetector(model="yolov8n-pose.pt")
-
-def process_image(image_path):
-    # Read image
-    img = cv2.imread(image_path)
-    
-    # Detect poses
-    results = detector.detect_pose(img, conf=0.3)
-    
-    # Draw poses with keypoints and skeleton
-    img, poses = detector.draw_poses(img, results,
-                                   draw_keypoints=True,
-                                   draw_skeleton=True)
-    
-    # Display results
-    cv2.imshow("Pose Detection", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()</code></pre>
+        <section id="showcase">
+            <h2>Example Outputs</h2>
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <div class="image-container">
+                        <img src="../images/pose-01.png" style="width:100%" alt="Basic pose detection example showing keypoints and skeleton">
+                        <div class="image-caption">
+                            <h3>Basic Pose Detection</h3>
+                            <p>Detection results showing 17 keypoints and skeleton connections for human pose analysis.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="example-output">
-                    <img src="../images/pose-01.png" alt="Pose Detection Output">
-                    <p>Example showing detected poses with keypoints and skeleton</p>
+                <div class="showcase-item">
+                    <div class="image-container">
+                        <img src="../images/pose-02.png" style="width:100%" alt="Exercise analysis showing angle measurements and form tracking">
+                        <div class="image-caption">
+                            <h3>Exercise Analysis</h3>
+                            <p>Advanced pose analysis with angle measurements, distance tracking, and form analysis for exercise monitoring.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="video-pose">
-            <h2>Real-time Pose Detection</h2>
+        <section id="basic-pose">
+            <h2>Basic Pose Detection</h2>
             <div class="example-container">
                 <div class="example-code">
-                    <pre><code>def process_video(video_path):
+                    <pre><code>from yolozone import PoseDetector
+import cv2
+
+# Initialize detector with a specific model
+detector = PoseDetector(model="yolov8l-pose.pt")
+
+# Read image
+img = cv2.imread("exercise.jpg")
+
+# Find keypoints
+keypoints = detector.find_keypoints(img)
+
+# Get points and lines for visualization
+points, lines = detector.draw_pose(keypoints)
+
+# Draw basic pose skeleton
+for point in points:
+    cv2.circle(img, point, 5, (255, 255, 255), 2)
+
+for line in lines:
+    cv2.line(img, line[0], line[1], (255, 255, 255), 2)
+
+# Display or save result
+cv2.imshow("Pose Detection", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()</code></pre>
+                </div>
+                <div class="example-explanation">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li>17-point keypoint detection</li>
+                        <li>Automatic skeleton visualization</li>
+                        <li>Support for multiple model sizes</li>
+                        <li>Easy-to-use visualization functions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="exercise-analysis">
+            <h2>Exercise Analysis</h2>
+            <div class="example-container">
+                <div class="example-code">
+                    <pre><code>def process_exercise_video(video_path, detector):
+    """Analyze exercise form in a video"""
     cap = cv2.VideoCapture(video_path)
+    
+    # Get video properties
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
     
     while True:
         ret, frame = cap.read()
         if not ret:
             break
-        
-        # Detect poses
-        results = detector.detect_pose(frame, conf=0.3)
-        
-        # Get keypoints
-        keypoints = detector.get_keypoints(results)
-        
-        # Draw poses
-        frame, poses = detector.draw_poses(frame, results)
-        
-        # Display keypoint information
-        for person_idx, person_kpts in enumerate(keypoints):
-            y_pos = 30
-            cv2.putText(frame, f"Person {person_idx + 1}", 
-                       (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX,
-                       0.8, (0, 255, 0), 2)
             
-            # Display confidence for key joints
-            joints = ["nose", "left_shoulder", "right_shoulder",
-                     "left_hip", "right_hip"]
-            for idx, joint in enumerate(joints):
-                conf = person_kpts[idx][2]
-                y_pos += 25
-                cv2.putText(frame, f"{joint}: {conf:.2f}",
-                           (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX,
-                           0.6, (0, 255, 0), 2)
+        # Detect pose keypoints
+        keypoints = detector.find_keypoints(frame)
         
-        cv2.imshow("Pose Detection", frame)
+        # Draw basic skeleton
+        points, lines = detector.draw_pose(keypoints)
+        for point in points:
+            cv2.circle(frame, point, 5, (255, 255, 255), 2)
+        for line in lines:
+            cv2.line(frame, line[0], line[1], (255, 255, 255), 2)
         
+        # Analyze left arm angle (shoulder-elbow-wrist)
+        angle, text, pos = detector.angle_between_3_points(
+            keypoints, 5, 7, 9  # Left shoulder, elbow, wrist
+        )
+        cv2.putText(frame, f"L.Arm: {text}", pos, 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+        
+        # Measure hand distance (wrist to wrist)
+        dist, text, pos, p1, p2 = detector.distance_between_2_points(
+            keypoints, 9, 10  # Left to Right wrist
+        )
+        cv2.putText(frame, f"Hand dist: {text}", pos, 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+        cv2.line(frame, p1, p2, (255, 0, 0), 2)
+        
+        # Calculate arm symmetry (angle between arms)
+        angle, text, pos = detector.angle_between_2_lines(
+            keypoints, 5, 9, 6, 10  # Left arm vs Right arm
+        )
+        cv2.putText(frame, f"Arms angle: {text}", pos, 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+        
+        cv2.imshow("Exercise Analysis", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     
     cap.release()
-    cv2.destroyAllWindows()</code></pre>
+    cv2.destroyAllWindows()
+
+# Initialize detector and process video
+detector = PoseDetector(model="yolov8l-pose.pt")
+process_exercise_video("exercise.mp4", detector)</code></pre>
                 </div>
                 <div class="example-explanation">
-                    <h3>Features</h3>
+                    <h3>Analysis Features</h3>
                     <ul>
-                        <li>Real-time pose detection</li>
-                        <li>Multi-person tracking</li>
-                        <li>Keypoint confidence scores</li>
-                        <li>Skeleton visualization</li>
+                        <li>Real-time angle measurements</li>
+                        <li>Distance tracking between keypoints</li>
+                        <li>Symmetry analysis</li>
+                        <li>Form monitoring and visualization</li>
+                    </ul>
+                    <h3>Exercise Metrics</h3>
+                    <ul>
+                        <li>Joint angles for form analysis</li>
+                        <li>Limb distances for range of motion</li>
+                        <li>Symmetry checking for balanced movement</li>
+                        <li>Real-time feedback visualization</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <section id="keypoint-analysis">
-            <h2>Keypoint Analysis</h2>
+        <section id="advanced-analysis">
+            <h2>Advanced Pose Analysis</h2>
             <div class="example-container">
                 <div class="example-code">
-                    <pre><code># Analyze specific keypoints
-def analyze_pose(keypoints):
-    # Check if person is standing
-    left_ankle = keypoints[15]
-    right_ankle = keypoints[16]
-    left_hip = keypoints[11]
-    right_hip = keypoints[12]
+                    <pre><code># Initialize with larger model for better accuracy
+detector = PoseDetector(model="yolov8x-pose.pt")
+
+# Process video with detailed analysis
+def analyze_exercise_form(video_path):
+    cap = cv2.VideoCapture(video_path)
+    frame_count = 0
     
-    if all(kp[2] > 0.5 for kp in [left_ankle, right_ankle,
-                                 left_hip, right_hip]):
-        # Calculate vertical alignment
-        hip_y = (left_hip[1] + right_hip[1]) / 2
-        ankle_y = (left_ankle[1] + right_ankle[1]) / 2
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+            
+        frame_count += 1
         
-        if abs(hip_y - ankle_y) > 100:
-            return "Standing"
-        else:
-            return "Sitting/Crouching"
+        try:
+            # Detect pose
+            keypoints = detector.find_keypoints(frame)
+            
+            # Draw skeleton
+            points, lines = detector.draw_pose(keypoints)
+            for point in points:
+                cv2.circle(frame, point, 5, (255, 255, 255), 2)
+            for line in lines:
+                cv2.line(frame, line[0], line[1], (255, 255, 255), 2)
+            
+            # Analyze multiple angles
+            angles = {
+                'left_arm': detector.angle_between_3_points(
+                    keypoints, 5, 7, 9)[0],  # Shoulder-elbow-wrist
+                'right_arm': detector.angle_between_3_points(
+                    keypoints, 6, 8, 10)[0],  # Shoulder-elbow-wrist
+                'left_leg': detector.angle_between_3_points(
+                    keypoints, 11, 13, 15)[0],  # Hip-knee-ankle
+                'right_leg': detector.angle_between_3_points(
+                    keypoints, 12, 14, 16)[0]  # Hip-knee-ankle
+            }
+            
+            # Check form symmetry
+            arm_diff = abs(angles['left_arm'] - angles['right_arm'])
+            leg_diff = abs(angles['left_leg'] - angles['right_leg'])
+            
+            # Display analysis
+            y_pos = 30
+            for name, angle in angles.items():
+                cv2.putText(frame, f"{name}: {angle:.1f}°", 
+                          (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 
+                          0.6, (0, 255, 0), 2)
+                y_pos += 25
+            
+            # Show symmetry analysis
+            cv2.putText(frame, f"Arm symmetry diff: {arm_diff:.1f}°",
+                      (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX,
+                      0.6, (0, 255, 255), 2)
+            y_pos += 25
+            cv2.putText(frame, f"Leg symmetry diff: {leg_diff:.1f}°",
+                      (10, y_pos), cv2.FONT_HERSHEY_SIMPLEX,
+                      0.6, (0, 255, 255), 2)
+            
+            cv2.imshow("Advanced Form Analysis", frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+                
+        except Exception as e:
+            print(f"Error on frame {frame_count}: {str(e)}")
+            continue
     
-    return "Uncertain"</code></pre>
+    cap.release()
+    cv2.destroyAllWindows()
+
+# Process video with advanced analysis
+analyze_exercise_form("workout.mp4")</code></pre>
                 </div>
                 <div class="example-tips">
-                    <h3>Analysis Tips</h3>
+                    <h3>Advanced Features</h3>
                     <ul>
-                        <li>Filter by confidence scores</li>
-                        <li>Consider missing keypoints</li>
-                        <li>Handle occlusions</li>
-                        <li>Use relative positions</li>
+                        <li>Multi-joint angle tracking</li>
+                        <li>Symmetry analysis for both arms and legs</li>
+                        <li>Comprehensive form monitoring</li>
+                        <li>Error handling for robust processing</li>
+                    </ul>
+                    <h3>Performance Tips</h3>
+                    <ul>
+                        <li>Use appropriate model size based on accuracy needs</li>
+                        <li>Enable GPU acceleration for faster processing</li>
+                        <li>Implement error handling for robust analysis</li>
+                        <li>Adjust visualization based on monitoring needs</li>
                     </ul>
                 </div>
-            </div>
-        </section>
-
-        <section id="best-practices">
-            <h2>Best Practices</h2>
-            <ul>
-                <li>Use appropriate model size for your needs:
-                    <ul>
-                        <li>yolov8n-pose.pt: Fastest but less accurate</li>
-                        <li>yolov8s-pose.pt: Balanced speed/accuracy</li>
-                        <li>yolov8l-pose.pt: More accurate but slower</li>
-                    </ul>
-                </li>
-                <li>Ensure good lighting conditions</li>
-                <li>Position camera for clear view of subjects</li>
-                <li>Handle keypoint confidence thresholds</li>
-                <li>Consider frame resolution vs performance</li>
-            </ul>
-        </section>
-
-        <section id="troubleshooting">
-            <h2>Troubleshooting</h2>
-            <div class="troubleshooting-tips">
-                <h3>Common Issues</h3>
-                <ul>
-                    <li>Poor Detection
-                        <ul>
-                            <li>Improve lighting</li>
-                            <li>Adjust camera position</li>
-                            <li>Use larger model</li>
-                        </ul>
-                    </li>
-                    <li>Missing Keypoints
-                        <ul>
-                            <li>Lower confidence threshold</li>
-                            <li>Handle occlusions in code</li>
-                        </ul>
-                    </li>
-                    <li>Performance Issues
-                        <ul>
-                            <li>Reduce resolution</li>
-                            <li>Use smaller model</li>
-                            <li>Process fewer frames</li>
-                        </ul>
-                    </li>
-                </ul>
             </div>
         </section>
     </main>

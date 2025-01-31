@@ -61,22 +61,71 @@
     <main>
         <section id="overview">
             <h2>Overview</h2>
-            <p>The Objects module provides a high-level interface for object detection and classification using YOLOv8. It supports multiple detection strategies, custom models, and real-time processing.</p>
+            <p>The Objects module provides a high-level interface for object detection and classification using YOLOv8. It supports multiple detection strategies, custom models, real-time processing, object tracking, and detailed analysis of detected objects.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <path d="M20.4 14.5L16 10L4 20"></path>
+                    </svg>
+                    <h3>Detection</h3>
+                    <p>Object detection with configurable confidence thresholds and custom model support</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    <h3>Tracking</h3>
+                    <p>Integrated object tracking capabilities for video streams and real-time analysis</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M16 8l-8 8"></path>
+                        <path d="M8 8l8 8"></path>
+                    </svg>
+                    <h3>Processing</h3>
+                    <p>Support for multiple compute devices (CPU, CUDA, MPS) for optimal performance</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <h3>Visualization</h3>
+                    <p>Comprehensive visualization tools for detected objects and tracking results</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <path d="M3.3 7l8.7 5 8.7-5"></path>
+                        <path d="M12 22V12"></path>
+                    </svg>
+                    <h3>Analysis</h3>
+                    <p>Object counting and center point analysis for advanced applications</p>
+                </div>
+            </div>
         </section>
 
         <section id="installation">
-            <h2>Usage</h2>
+            <h2>Installation</h2>
             <div class="installation-card">
-                <pre><code>from yolozone import Objects
+                <pre><code>pip install yolozone</code></pre>
+            </div>
+        </section>
 
-# Initialize detector
-detector = Objects()
+        <section id="initialization">
+            <h2>Initialization</h2>
+            <div class="code-block">
+                <pre><code>from yolozone import ObjectDetector
 
-# Detect objects in an image
-results = detector.detect('image.jpg')
+# Initialize with default model
+detector = ObjectDetector()
 
-# Process video stream
-detector.process_video('video.mp4', output='output.mp4')</code></pre>
+# Initialize with custom model
+detector = ObjectDetector(model="path/to/custom/model.pt")</code></pre>
             </div>
         </section>
 
@@ -84,73 +133,209 @@ detector.process_video('video.mp4', output='output.mp4')</code></pre>
             <h2>Methods</h2>
             <div class="method-grid">
                 <div class="method-doc">
-                    <h3>detect(source)</h3>
-                    <p>Detect objects in an image or video frame.</p>
+                    <h3>__init__(model="yolov8s.pt")</h3>
+                    <p>Initialize the object detector with a YOLO model</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>source</code> (str | np.ndarray): Path to image or numpy array</li>
+                            <li><code>model</code> (str): Path to YOLO model weights (default: "yolov8s.pt")</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>detect_objects(img, device="cpu", conf=0.25, track=False)</h3>
+                    <p>Detect objects in an image with optional tracking</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>img</code> (numpy.ndarray): Input image</li>
+                            <li><code>device</code> (str): Device to run inference on ('cpu', 'cuda', 'mps')</li>
+                            <li><code>conf</code> (float): Confidence threshold (0-1)</li>
+                            <li><code>track</code> (bool): Enable object tracking</li>
                         </ul>
                         <h4>Returns</h4>
                         <ul>
-                            <li><code>List[Detection]</code>: List of detected objects with coordinates and confidence scores</li>
+                            <li><code>Results</code>: Detection results containing boxes, classes, and confidence scores</li>
                         </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code>results = detector.detect_objects(
+    image,
+    device="cuda",
+    conf=0.35,
+    track=True
+)</code></pre>
                     </div>
                 </div>
 
                 <div class="method-doc">
-                    <h3>process_video(source, output=None)</h3>
-                    <p>Process video file or stream and detect objects in each frame.</p>
+                    <h3>get_boxes(results)</h3>
+                    <p>Extract bounding boxes from detection results</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>source</code> (str): Path to video file or stream URL</li>
-                            <li><code>output</code> (str, optional): Path to save output video</li>
+                            <li><code>results</code> (Results): Detection results from detect_objects()</li>
                         </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>numpy.ndarray</code>: Array of [x1, y1, x2, y2, confidence, class_id]</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code>boxes = detector.get_boxes(results)
+for box in boxes:
+    x1, y1, x2, y2, conf, class_id = box</code></pre>
                     </div>
                 </div>
 
                 <div class="method-doc">
-                    <h3>set_model(model_path)</h3>
-                    <p>Load a custom YOLOv8 model for detection.</p>
+                    <h3>draw_detections(img, results, classes=None, color=(0, 255, 0), thickness=2)</h3>
+                    <p>Visualize detection results on the image</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>model_path</code> (str): Path to custom model weights</li>
+                            <li><code>img</code> (numpy.ndarray): Image to draw on</li>
+                            <li><code>results</code> (Results): Detection results</li>
+                            <li><code>classes</code> (List[str], optional): List of class names to filter</li>
+                            <li><code>color</code> (tuple): Box and text color in BGR format</li>
+                            <li><code>thickness</code> (int): Line thickness</li>
                         </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>tuple</code>: (Annotated image, List of (class_name, confidence, box) tuples)</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code>img, detections = detector.draw_detections(
+    img,
+    results,
+    classes=['person', 'car'],
+    color=(0, 255, 0),
+    thickness=2
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>count_objects(results, classes=None)</h3>
+                    <p>Count detected objects by class</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>results</code> (Results): Detection results</li>
+                            <li><code>classes</code> (List[str], optional): List of class names to filter</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>dict</code>: Dictionary of {class_name: count}</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code>counts = detector.count_objects(results)
+print(f"Found {counts.get('person', 0)} people")</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>get_object_centers(results)</h3>
+                    <p>Calculate center points of all detected objects</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>results</code> (Results): Detection results</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>dict</code>: Dictionary of {class_name: [(x,y), ...]}</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code>centers = detector.get_object_centers(results)
+for class_name, points in centers.items():
+    print(f"{class_name} centers: {points}")</code></pre>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="examples">
-            <h2>Examples</h2>
+            <h2>Complete Examples</h2>
             <div class="example-grid">
                 <div class="example-card">
-                    <h3>Basic Detection</h3>
-                    <pre><code>from yolozone import Objects
+                    <h3>Basic Object Detection</h3>
+                    <pre><code>from yolozone import ObjectDetector
+import cv2
 
-detector = Objects()
-results = detector.detect('image.jpg')
+# Initialize detector
+detector = ObjectDetector()
 
-for obj in results:
-    print(f"Found {obj.class_name} with confidence {obj.confidence}")</code></pre>
+# Read image
+image = cv2.imread('image.jpg')
+
+# Detect objects
+results = detector.detect_objects(image, conf=0.25)
+
+# Draw detections
+image, detections = detector.draw_detections(image, results)
+
+# Display results
+for class_name, conf, box in detections:
+    print(f"Found {class_name} with confidence {conf:.2f}")</code></pre>
                 </div>
 
                 <div class="example-card">
-                    <h3>Custom Model</h3>
-                    <pre><code>detector = Objects()
-detector.set_model('path/to/custom/model.pt')
-results = detector.detect('image.jpg')</code></pre>
+                    <h3>Object Tracking</h3>
+                    <pre><code>import cv2
+
+# Initialize with tracking
+detector = ObjectDetector()
+
+# Open video capture
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+        
+    # Detect and track objects
+    results = detector.detect_objects(
+        frame,
+        track=True,
+        conf=0.35
+    )
+    
+    # Draw detections
+    frame, detections = detector.draw_detections(frame, results)
+    
+    # Show frame
+    cv2.imshow('Tracking', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</code></pre>
                 </div>
 
                 <div class="example-card">
-                    <h3>Video Processing</h3>
-                    <pre><code>detector = Objects()
-detector.process_video(
-    'input.mp4',
-    output='output.mp4'
-)</code></pre>
+                    <h3>Object Counting and Analysis</h3>
+                    <pre><code># Detect objects
+results = detector.detect_objects(image)
+
+# Count objects by class
+counts = detector.count_objects(results)
+print("Object counts:", counts)
+
+# Get object centers
+centers = detector.get_object_centers(results)
+for class_name, points in centers.items():
+    print(f"{class_name} locations:", points)</code></pre>
                 </div>
             </div>
         </section>

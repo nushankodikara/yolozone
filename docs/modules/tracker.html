@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Object Tracking Module - YoloZone | Motion Analysis & Trajectory Tracking</title>
-    <meta name="description" content="YoloZone's Object Tracking module provides advanced capabilities for tracking objects, analyzing motion patterns, and generating trajectory data in videos.">
-    <meta name="keywords" content="object tracking, motion analysis, trajectory tracking, YOLOv8, computer vision, video analysis">
+    <title>Object Tracking Module - YoloZone | Motion Analysis & Tracking</title>
+    <meta name="description" content="YoloZone's Object Tracking module provides advanced capabilities for tracking objects, analyzing motion patterns, and monitoring line crossings in videos.">
+    <meta name="keywords" content="object tracking, motion analysis, trajectory tracking, line crossing detection, YOLOv8, computer vision, video analysis">
     <meta name="author" content="Nushan Kodikara">
     
     <!-- Open Graph / Social Media Meta Tags -->
@@ -55,28 +55,97 @@
 
     <header>
         <h1>Tracker Module</h1>
-        <p>Robust object tracking and motion analysis</p>
+        <p>Advanced object tracking and motion analysis capabilities</p>
     </header>
 
     <main>
         <section id="overview">
             <h2>Overview</h2>
-            <p>The Tracker module provides advanced object tracking capabilities, enabling you to track objects across video frames, analyze their motion patterns, and generate trajectory data.</p>
+            <p>The Tracker module provides sophisticated object tracking and motion analysis capabilities. It enables robust object tracking across video frames, trajectory analysis, line crossing detection, and detailed motion pattern analysis.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    <h3>Object Tracking</h3>
+                    <p>Robust multi-object tracking with automatic ID assignment</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 3v18m-10-18v18M3 7h18M3 17h18"></path>
+                    </svg>
+                    <h3>Line Crossing</h3>
+                    <p>Advanced line crossing detection with directional analysis</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2v4m0 12v4m-10-10h4m12 0h4"></path>
+                    </svg>
+                    <h3>Motion Analysis</h3>
+                    <p>Track movement patterns and calculate trajectories</p>
+                </div>
+                <div class="feature-card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <h3>Visualization</h3>
+                    <p>Rich visualization tools for tracks and statistics</p>
+                </div>
+            </div>
         </section>
 
         <section id="installation">
-            <h2>Usage</h2>
+            <h2>Installation</h2>
             <div class="installation-card">
-                <pre><code>from yolozone import Tracker
+                <pre><code>pip install yolozone</code></pre>
+            </div>
+        </section>
+
+        <section id="initialization">
+            <h2>Initialization</h2>
+            <div class="code-block">
+                <pre><code>from yolozone import ObjectTracker
 
 # Initialize tracker
-tracker = Tracker()
+tracker = ObjectTracker()
 
-# Track objects in video
-tracks = tracker.track_video('video.mp4')
+# Tracking parameters can be customized:
+tracker.max_track_length = 30  # Maximum track history length
+tracker.max_inactive_frames = 30  # Frames before removing inactive tracks
+tracker.min_detection_confidence = 0.3  # Minimum confidence for detection
+tracker.min_track_hits = 3  # Minimum detections to confirm track</code></pre>
+            </div>
+        </section>
 
-# Get trajectory data
-trajectories = tracker.get_trajectories(tracks)</code></pre>
+        <section id="parameters">
+            <h2>Configuration Parameters</h2>
+            <div class="param-grid">
+                <div class="param-card">
+                    <h3>Track Management</h3>
+                    <ul>
+                        <li><code>max_track_length</code>: Maximum points in track history (default: 30)</li>
+                        <li><code>max_inactive_frames</code>: Frames before track removal (default: 30)</li>
+                        <li><code>min_track_hits</code>: Minimum detections to confirm track (default: 3)</li>
+                    </ul>
+                </div>
+                <div class="param-card">
+                    <h3>Detection Parameters</h3>
+                    <ul>
+                        <li><code>min_detection_confidence</code>: Minimum confidence threshold (default: 0.3)</li>
+                        <li><code>max_movement_threshold</code>: Maximum pixel movement between frames (default: 100)</li>
+                        <li><code>max_size_change</code>: Maximum allowed size change ratio (default: 0.5)</li>
+                    </ul>
+                </div>
+                <div class="param-card">
+                    <h3>Matching Parameters</h3>
+                    <ul>
+                        <li><code>max_frames_to_match</code>: Maximum frame difference for matching (default: 30)</li>
+                        <li><code>iou_threshold</code>: Minimum IOU for box matching (default: 0.3)</li>
+                    </ul>
+                </div>
             </div>
         </section>
 
@@ -84,95 +153,273 @@ trajectories = tracker.get_trajectories(tracks)</code></pre>
             <h2>Methods</h2>
             <div class="method-grid">
                 <div class="method-doc">
-                    <h3>track_video(source, output=None)</h3>
-                    <p>Track objects throughout a video sequence.</p>
+                    <h3>update(results, min_hits=3)</h3>
+                    <p>Update tracks with new detections</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>source</code> (str): Path to video file or stream URL</li>
-                            <li><code>output</code> (str, optional): Path to save annotated video</li>
+                            <li><code>results</code>: Detection results from object detector</li>
+                            <li><code>min_hits</code> (int): Minimum detections to confirm track</li>
                         </ul>
                         <h4>Returns</h4>
                         <ul>
-                            <li><code>List[Track]</code>: List of tracked objects with their trajectories</li>
+                            <li><code>dict</code>: Dictionary of current tracks</li>
                         </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Update tracks with new detections
+current_tracks = tracker.update(detection_results)</code></pre>
                     </div>
                 </div>
 
                 <div class="method-doc">
-                    <h3>get_trajectories(tracks)</h3>
-                    <p>Extract trajectory data from tracked objects.</p>
+                    <h3>draw_tracks(frame, tracks, draw_labels=True, draw_trails=True)</h3>
+                    <p>Visualize tracked objects and their trails</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>tracks</code> (List[Track]): List of tracked objects</li>
+                            <li><code>frame</code>: Input image/frame</li>
+                            <li><code>tracks</code>: Dictionary of current tracks</li>
+                            <li><code>draw_labels</code> (bool): Whether to draw labels</li>
+                            <li><code>draw_trails</code> (bool): Whether to draw motion trails</li>
                         </ul>
                         <h4>Returns</h4>
                         <ul>
-                            <li><code>Dict[int, List[Point]]</code>: Dictionary mapping track IDs to trajectory points</li>
+                            <li><code>numpy.ndarray</code>: Frame with visualizations</li>
                         </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Draw tracks with trails and labels
+frame = tracker.draw_tracks(
+    frame,
+    current_tracks,
+    draw_labels=True,
+    draw_trails=True
+)</code></pre>
                     </div>
                 </div>
 
                 <div class="method-doc">
-                    <h3>analyze_motion(track)</h3>
-                    <p>Analyze motion patterns of a tracked object.</p>
+                    <h3>detect_line_crossing(line_start, line_end, track_info)</h3>
+                    <p>Detect if a track has crossed a defined line</p>
                     <div class="params">
                         <h4>Parameters</h4>
                         <ul>
-                            <li><code>track</code> (Track): A tracked object instance</li>
+                            <li><code>line_start</code> (tuple): Start point of line (x, y)</li>
+                            <li><code>line_end</code> (tuple): End point of line (x, y)</li>
+                            <li><code>track_info</code>: Track information dictionary</li>
                         </ul>
                         <h4>Returns</h4>
                         <ul>
-                            <li><code>MotionAnalysis</code>: Motion analysis results including speed, direction, etc.</li>
+                            <li><code>tuple</code>: (crossed: bool, direction: int)</li>
                         </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Check if track crossed line
+crossed, direction = tracker.detect_line_crossing(
+    (100, 300), (500, 300),  # Line coordinates
+    track_info
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>update_line_crossings(tracks, line_start, line_end)</h3>
+                    <p>Update and count line crossings by direction and class</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>tracks</code>: Dictionary of current tracks</li>
+                            <li><code>line_start</code> (tuple): Start point of line</li>
+                            <li><code>line_end</code> (tuple): End point of line</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>dict</code>: Counts of crossings by direction and class</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Get crossing statistics
+crossings = tracker.update_line_crossings(
+    tracks,
+    (100, 300),  # Line start
+    (500, 300)   # Line end
+)
+print(f"Up crossings: {crossings['up']}")
+print(f"Down crossings: {crossings['down']}")</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>draw_counting_line(frame, line_start, line_end, counts)</h3>
+                    <p>Visualize counting line and crossing statistics</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>frame</code>: Input image/frame</li>
+                            <li><code>line_start</code> (tuple): Start point of line</li>
+                            <li><code>line_end</code> (tuple): End point of line</li>
+                            <li><code>counts</code>: Dictionary of crossing counts</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>numpy.ndarray</code>: Frame with line and statistics</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Draw counting line and statistics
+frame = tracker.draw_counting_line(
+    frame,
+    (100, 300),
+    (500, 300),
+    crossing_counts
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-doc">
+                    <h3>get_track_info(track_id)</h3>
+                    <p>Get detailed information about a specific track</p>
+                    <div class="params">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>track_id</code>: ID of the track</li>
+                        </ul>
+                        <h4>Returns</h4>
+                        <ul>
+                            <li><code>dict</code>: Track information including history and statistics</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <h4>Example</h4>
+                        <pre><code># Get track information
+info = tracker.get_track_info(track_id)
+print(f"Track length: {info['length']}")
+print(f"Displacement: {info['displacement']}")</code></pre>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="examples">
-            <h2>Examples</h2>
+            <h2>Complete Examples</h2>
             <div class="example-grid">
                 <div class="example-card">
-                    <h3>Basic Tracking</h3>
-                    <pre><code>from yolozone import Tracker
+                    <h3>Basic Object Tracking</h3>
+                    <pre><code>from yolozone import ObjectDetector, ObjectTracker
+import cv2
 
-tracker = Tracker()
-tracks = tracker.track_video(
-    'traffic.mp4',
-    output='tracked.mp4'
-)
+# Initialize detector and tracker
+detector = ObjectDetector()
+tracker = ObjectTracker()
 
-print(f"Tracked {len(tracks)} objects")</code></pre>
+# Process video
+cap = cv2.VideoCapture('video.mp4')
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+        
+    # Detect objects with tracking enabled
+    results = detector.detect_objects(
+        frame,
+        track=True,
+        conf=0.35
+    )
+    
+    # Update tracks
+    current_tracks = tracker.update(results)
+    
+    # Draw tracks
+    frame = tracker.draw_tracks(
+        frame,
+        current_tracks,
+        draw_trails=True
+    )
+    
+    cv2.imshow('Tracking', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</code></pre>
                 </div>
 
                 <div class="example-card">
-                    <h3>Trajectory Analysis</h3>
-                    <pre><code>tracks = tracker.track_video('video.mp4')
-trajectories = tracker.get_trajectories(tracks)
+                    <h3>Line Crossing Detection</h3>
+                    <pre><code># Define counting line
+line_start = (100, 300)
+line_end = (500, 300)
 
-for track_id, points in trajectories.items():
-    print(f"Track {track_id} has {len(points)} points")
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
     
-    # Calculate total distance
-    distance = sum(
-        p1.distance(p2)
-        for p1, p2 in zip(points, points[1:])
-    )</code></pre>
+    # Detect and track objects
+    results = detector.detect_objects(frame, track=True)
+    current_tracks = tracker.update(results)
+    
+    # Update crossing counts
+    counts = tracker.update_line_crossings(
+        current_tracks,
+        line_start,
+        line_end
+    )
+    
+    # Draw visualizations
+    frame = tracker.draw_tracks(frame, current_tracks)
+    frame = tracker.draw_counting_line(
+        frame,
+        line_start,
+        line_end,
+        counts
+    )
+    
+    cv2.imshow('Line Crossing', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break</code></pre>
                 </div>
 
                 <div class="example-card">
                     <h3>Motion Analysis</h3>
-                    <pre><code>tracks = tracker.track_video('video.mp4')
-
-for track in tracks:
-    motion = tracker.analyze_motion(track)
+                    <pre><code># Process video and analyze motion
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
     
-    print(f"Track {track.id}:")
-    print(f"  Average speed: {motion.avg_speed}")
-    print(f"  Direction: {motion.direction}")
-    print(f"  Motion pattern: {motion.pattern}")</code></pre>
+    # Track objects
+    results = detector.detect_objects(frame, track=True)
+    current_tracks = tracker.update(results)
+    
+    # Analyze each track
+    for track_id in current_tracks:
+        info = tracker.get_track_info(track_id)
+        
+        # Print motion statistics
+        print(f"Track {track_id}:")
+        print(f"- Length: {info['length']} frames")
+        print(f"- Total displacement: {info['displacement']:.2f}")
+        print(f"- Class: {info['class']}")
+        print(f"- Current position: {info['current_pos']}")
+    
+    # Visualize
+    frame = tracker.draw_tracks(
+        frame,
+        current_tracks,
+        draw_trails=True
+    )
+    
+    cv2.imshow('Motion Analysis', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break</code></pre>
                 </div>
             </div>
         </section>
