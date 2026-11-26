@@ -9,13 +9,21 @@ import numpy as np
 import cv2
 from ultralytics import YOLO
 from .tracker import ObjectTracker
+from .models import normalize_model_name, identify_model_family
 
 class ObjectDetector:
     def __init__(self, model="yolov8s.pt"):
-        """Initialize the object detector with a YOLO model"""
-        self.model = model
+        """Initialize the object detector with any YOLO model (v8, v9, v10, 11, world, or custom)."""
+        self.model = normalize_model_name(model)
+        self.model_info = identify_model_family(self.model)
         self.detector = YOLO(self.model)
         self.tracker = ObjectTracker()
+
+    def set_classes(self, classes):
+        """Set custom vocabulary for YOLO-World models or active detection filter."""
+        if hasattr(self.detector, 'set_classes'):
+            self.detector.set_classes(classes)
+        self.active_classes = [c.lower() for c in classes] if classes else None
         
     def detect_objects(self, img, device="cpu", conf=0.25, track=False):
         """Detect objects in an image

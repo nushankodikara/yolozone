@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Training Examples - YoloZone</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <script>
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand"><a href="../index.html">YoloZone</a></div>
+        <ul style="display: flex; justify-content: center; align-items: center;">
+            <li><a href="../index.html#overview">Overview</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="../index.html#examples">Examples</a></li>
+            <li><a href="../index.html#installation">Installation</a></li>
+            <li>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path class="sun" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        <path class="moon" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Custom Object Training Examples</h1>
+        <p>Step-by-step dataset creation and fine-tuning with YoloZone</p>
+    </header>
+
+    <main>
+        <section class="example-section">
+            <h2>Custom Object Dataset Preparation & Fine-Tuning</h2>
+            <p>Demonstrates creating a custom dataset from video frames, normalizing coordinates to YOLO standard format, and initiating model training.</p>
+
+            <img src="../images/training-01.png" alt="Training Dataset Preview" style="max-width: 100%; border-radius: 8px; margin: 15px 0; border: 1px solid var(--border);">
+
+            <div class="code-block">
+                <pre><code>from yolozone import DatasetHelper, ObjectTrainer
+import cv2
+
+# 1. Setup dataset for custom items
+dataset = DatasetHelper("warehouse_dataset", classes=["drone", "package"])
+
+# 2. Add annotated samples (pixel bounding boxes: x1, y1, x2, y2)
+cap = cv2.VideoCapture("videos/training-sample-01.mp4")
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+    dataset.add_sample(frame, [("drone", (150, 100, 230, 160))])
+cap.release()
+
+# 3. Train model
+trainer = ObjectTrainer(base_model="yolov8n.pt", dataset=dataset)
+results = trainer.train(epochs=25, imgsz=640, device="cpu")
+print("Trained model:", results["best_weights"])</code></pre>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

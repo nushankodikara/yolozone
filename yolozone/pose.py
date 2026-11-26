@@ -8,10 +8,13 @@ Contact:
 import numpy as np
 import cv2
 import ultralytics
+from .models import normalize_model_name, identify_model_family
 
 class PoseDetector:
     def __init__(self, model="yolov8s-pose.pt"):
-        self.model = model
+        """Initialize PoseDetector with any YOLO pose model (v8-pose, 11-pose, or custom)."""
+        self.model = normalize_model_name(model)
+        self.model_info = identify_model_family(self.model)
         self.pose = ultralytics.YOLO(self.model)
     
     def find_keypoints(self, img, device="cpu"):

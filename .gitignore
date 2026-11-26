@@ -1,8 +1,11 @@
 .venv
-build
-dist
-test
-yolozone.egg-info
+build/
+dist/
+test/
+*.egg-info/
+yolozone.egg-info/
 .env
-__pycache__
+__pycache__/
+*.pyc
 *.pt
+.pytest_cache/

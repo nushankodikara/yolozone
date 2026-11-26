@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand & Finger Tracking Module - YoloZone</title>
+    <meta name="description" content="YoloZone's Hand & Finger Tracking module provides 21-point kinematic landmark estimation, finger poses, and gesture recognition.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <script>
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand"><a href="../index.html">YoloZone</a></div>
+        <ul style="display: flex; justify-content: center; align-items: center;">
+            <li><a href="../index.html#overview">Overview</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="../index.html#examples">Examples</a></li>
+            <li><a href="../index.html#installation">Installation</a></li>
+            <li>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path class="sun" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        <path class="moon" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Hand & Finger Tracking Module</h1>
+        <p>21-point kinematic hand topology, individual finger pose analysis, and gesture detection</p>
+    </header>
+
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>The Hand module provides precision 21-landmark kinematic hand tracking, per-finger state evaluation (extended, curled, flexion angle), pinching detection, and gesture recognition (fist, pointing, peace, thumbs up, waving).</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>21 Landmarks</h3>
+                    <p>Standardized hand landmark topology across wrist, CMC, MCP, PIP, DIP, and TIP joints for all 5 fingers.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Finger Poses</h3>
+                    <p>Detects individual finger states, joint angles, and tip positions for thumb, index, middle, ring, and pinky.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Gestures</h3>
+                    <p>Classifies waving, pinching, clapping, raised hands, peace, thumbs-up, and pointing automatically.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="quickstart">
+            <h2>Quick Start</h2>
+            <div class="code-block">
+                <pre><code>from yolozone import HandTracker, PoseDetector
+import cv2
+
+pose = PoseDetector("yolov8s-pose.pt")
+tracker = HandTracker()
+
+cap = cv2.VideoCapture("videos/hand-gesture-01.mp4")
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+    kp = pose.find_keypoints(frame)
+    hands = tracker.update(frame, keypoints=kp)
+    frame = tracker.draw_tracks(frame, hands, draw_skeleton=True, draw_gestures=True)
+    cv2.imshow("Hand Tracking", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break</code></pre>
+            </div>
+        </section>
+
+        <section id="visual-preview">
+            <h2>Visual Output</h2>
+            <img src="../images/hand-01.png" alt="Hand Tracking Preview" style="max-width: 100%; border-radius: 8px; margin-top: 15px; border: 1px solid var(--border);">
+        </section>
+    </main>
+</body>
+</html>

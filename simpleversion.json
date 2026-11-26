@@ -1,0 +1,28 @@
+{
+  "name": "yolozone",
+  "version": "0.1.0",
+  "release_date": "2026-11-26",
+  "description": "A powerful computer vision toolkit built on YOLOv8, YOLOv9, YOLOv10, and YOLO11 for object detection, pose estimation, hand and finger tracking, facial plane landmark and emotion analysis, object tracking, and custom model training.",
+  "python_versions": [
+    "3.8",
+    "3.9",
+    "3.10",
+    "3.11",
+    "3.12",
+    "3.13"
+  ],
+  "supported_models": [
+    "yolov8n", "yolov8s", "yolov8m", "yolov8l", "yolov8x",
+    "yolov8n-pose", "yolov8s-pose", "yolov8m-pose", "yolov8l-pose", "yolov8x-pose",
+    "yolov9t", "yolov9s", "yolov9m", "yolov9c", "yolov9e",
+    "yolov10n", "yolov10s", "yolov10m", "yolov10b", "yolov10l", "yolov10x",
+    "yolo11n", "yolo11s", "yolo11m", "yolo11l", "yolo11x",
+    "yolo11n-pose", "yolo11s-pose", "yolo11m-pose", "yolo11l-pose", "yolo11x-pose",
+    "yolo_world"
+  ],
+  "license": "MIT",
+  "author": "Nushan Kodikara",
+  "contact": "nushankodi@gmail.com",
+  "homepage": "https://nushankodikara.github.io/yolozone/",
+  "repository": "https://github.com/nushankodikara/yolozone"
+}

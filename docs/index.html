@@ -28,6 +28,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
     
+    <!-- Version Loader -->
+    <script>
+        fetch('simpleversion.json')
+            .then(res => res.json())
+            .then(data => {
+                document.querySelectorAll('.yolozone-version').forEach(el => {
+                    el.textContent = 'v' + data.version;
+                });
+            })
+            .catch(() => {});
+    </script>
+
     <!-- Theme Script -->
     <script>
         const theme = localStorage.getItem('theme') || 'light';
@@ -54,7 +66,7 @@
     </nav>
 
     <header>
-        <h1>YoloZone</h1>
+        <h1>YoloZone <span style="font-size: 0.45em; vertical-align: middle; background: var(--primary, #2563eb); color: white; padding: 4px 10px; border-radius: 999px; font-weight: 600;" class="yolozone-version">v0.1.0</span></h1>
         <p>A powerful computer vision toolkit built on YOLOv8, designed for simplicity and performance</p>
     </header>
 
@@ -122,6 +134,21 @@
                     <p>Robust object tracking with motion analysis and trajectory prediction features.</p>
                     <a href="modules/tracker.html">View Documentation →</a>
                 </div>
+                <div class="module-card">
+                    <h3>Hands & Fingers</h3>
+                    <p>21-point kinematic landmark estimation, finger poses, flexion angles, pinching, and gesture detection.</p>
+                    <a href="modules/hands.html">View Documentation →</a>
+                </div>
+                <div class="module-card">
+                    <h3>Face & Emotion</h3>
+                    <p>3D mathematical face plane mapping (solvePnP), dense landmarks, head tilt/yaw, and emotion classification.</p>
+                    <a href="modules/face.html">View Documentation →</a>
+                </div>
+                <div class="module-card">
+                    <h3>Object Training</h3>
+                    <p>Streamlined dataset creation, bounding box annotation, and fine-tuning YOLO models for custom items.</p>
+                    <a href="modules/training.html">View Documentation →</a>
+                </div>
             </div>
         </section>
 
@@ -142,6 +169,21 @@
                     <h3>Object Tracking</h3>
                     <p>Discover advanced object tracking techniques and movement analysis.</p>
                     <a href="examples/tracking.html">View Example →</a>
+                </div>
+                <div class="example-card">
+                    <h3>Hand & Finger Tracking</h3>
+                    <p>Track 21 finger landmarks, flexion angles, pinching, and gestures in video.</p>
+                    <a href="examples/hands.html">View Example →</a>
+                </div>
+                <div class="example-card">
+                    <h3>Face Plane & Emotions</h3>
+                    <p>Map faces to 3D mathematical planes, estimate head pose, and classify emotions.</p>
+                    <a href="examples/face.html">View Example →</a>
+                </div>
+                <div class="example-card">
+                    <h3>Custom Object Training</h3>
+                    <p>Build datasets, annotate bounding boxes, and fine-tune YOLO models for new items.</p>
+                    <a href="examples/training.html">View Example →</a>
                 </div>
             </div>
         </section>

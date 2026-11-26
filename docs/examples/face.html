@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Plane & Emotion Analysis Examples - YoloZone</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <script>
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand"><a href="../index.html">YoloZone</a></div>
+        <ul style="display: flex; justify-content: center; align-items: center;">
+            <li><a href="../index.html#overview">Overview</a></li>
+            <li><a href="../index.html#modules">Modules</a></li>
+            <li><a href="../index.html#examples">Examples</a></li>
+            <li><a href="../index.html#installation">Installation</a></li>
+            <li>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path class="sun" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        <path class="moon" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Face Plane & Emotion Examples</h1>
+        <p>3D Perspective-n-Point face plane mapping, landmarks, and emotion evaluation</p>
+    </header>
+
+    <main>
+        <section class="example-section">
+            <h2>3D Mathematical Face Plane & Emotion HUD</h2>
+            <p>Estimates head pose (pitch, yaw, roll), projects the face mathematical plane normal vector from the nose, and evaluates emotion probabilities.</p>
+
+            <img src="../images/face-stock-verified.png" alt="Face Plane Output on Stock Video" style="max-width: 100%; border-radius: 8px; margin: 15px 0; border: 1px solid var(--border);">
+            <p><em>Verified on <code>videos/stock-face-headpose.mp4</code> and <code>videos/face-emotion-01.mp4</code>.</em></p>
+
+            <div class="code-block">
+                <pre><code>from yolozone import FaceTracker, PoseDetector
+import cv2
+
+pose = PoseDetector("yolov8s-pose.pt")
+face_tracker = FaceTracker()
+
+cap = cv2.VideoCapture("videos/face-emotion-01.mp4")
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    keypoints = pose.find_keypoints(frame)
+    tracked_faces = face_tracker.update(frame, keypoints=keypoints)
+
+    # Render 3D mathematical plane axis, landmarks, and emotion HUD
+    frame = face_tracker.draw_tracks(frame, tracked_faces, draw_plane=True, draw_trails=True)
+
+    cv2.imshow("Face Plane & Emotion", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</code></pre>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
